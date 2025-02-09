@@ -1,17 +1,22 @@
-name: Example Workflow
+name: Daily Commit
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "30 2 * * *"  # Runs daily at 2:30 AM UTC
 
 jobs:
-  test:
+  commit:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: 23f2000547@ds.study.iitm.ac.in
-        run: echo "Hello, world!"
+      - name: Force Update (23f2000547@ds.study.iitm.ac.in)
+        run: |
+          echo "Last run: $(date)" > last-run.txt
+          git config --global user.name "GitHub Action"
+          git config --global user.email "23f2000547@ds.study.iitm.ac.in"
+          git add last-run.txt
+          git commit -m "Daily update: $(date)" || echo "No changes to commit"
+          git push
